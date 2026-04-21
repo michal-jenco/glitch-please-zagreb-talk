@@ -51,7 +51,7 @@ I pick. It's subjective. Bonus points for recursive glitch chains, cool palette 
 
 ## 🎞 The slide deck
 
-Open [`presentation.html`](index.html) in any modern browser (Chrome recommended, works offline, no internet required).
+Open [`index.html`](index.html) in any modern browser (Chrome recommended, works offline, no internet required).
 
 ### Navigation
 
@@ -73,7 +73,7 @@ On a phone: just tap the edges of the screen or swipe.
 
 | File | What it is |
 |------|------------|
-| `presentation.html` | The self-contained slide deck (21 slides, no dependencies, runs offline) |
+| `index.html` | The self-contained slide deck (21 slides, no dependencies, runs offline) |
 | `glitch-please.apk` | The Android app — install to Android 7+ device |
 | `speaker-notes.md` | My talk outline with timing cues and per-segment notes |
 | `challenge-card.md` | Printable / shareable version of the challenge rules |

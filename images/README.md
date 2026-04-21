@@ -1,6 +1,6 @@
 # Presentation images
 
-The deck is now 21 slides. Images are organized across this folder + 4 subfolders (`photos/`, `D3lta/`, `8bitphotolab/`, `glitches-from-2024/`). Most images are already wired into `presentation.html` using their original filenames — no renaming required.
+The deck is now 21 slides. Images are organized across this folder + 4 subfolders (`photos/`, `D3lta/`, `8bitphotolab/`, `glitches-from-2024/`). Most images are already wired into `index.html` using their original filenames — no renaming required.
 
 ## What's wired and where
 
@@ -35,7 +35,7 @@ The deck is now 21 slides. Images are organized across this folder + 4 subfolder
 - `glitches-from-2024/` — 15 other renaissance screenshots not in the FACES/NOT-FACES grids
 - `2025-sculpture-glitch.jpg` — the purple/blue glitched bust (optional swap for slide 13)
 
-To swap any pick: edit the relevant `<img src="images/...">` and matching `data-name="..."` in `presentation.html`. No file renaming needed.
+To swap any pick: edit the relevant `<img src="images/...">` and matching `data-name="..."` in `index.html`. No file renaming needed.
 
 ## Subfolders
 
@@ -46,7 +46,7 @@ To swap any pick: edit the relevant `<img src="images/...">` and matching `data-
 
 ## Verifying
 
-Open `presentation.html` in Chrome. Striped magenta placeholders with `⚠ IMAGE: filename` text = image not loading (wrong path or not saved yet). Real image rendering = correctly wired.
+Open `index.html` in Chrome. Striped magenta placeholders with `⚠ IMAGE: filename` text = image not loading (wrong path or not saved yet). Real image rendering = correctly wired.
 
 ## Aspect ratio notes
 

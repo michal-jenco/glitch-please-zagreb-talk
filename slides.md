@@ -1,6 +1,6 @@
 # Slide Deck — 21 slides
 
-The authoritative slide deck is `presentation.html`. This document is a quick-reference index only — for visual truth and speaker notes, open the HTML and press `S` (or read `speaker-notes.md`).
+The authoritative slide deck is `index.html`. This document is a quick-reference index only — for visual truth and speaker notes, open the HTML and press `S` (or read `speaker-notes.md`).
 
 ## Aesthetic (shared across deck)
 

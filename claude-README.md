@@ -5,7 +5,7 @@ International Glitch Festival · Glitch Cult strand
 
 ## Files
 
-- **[presentation.html](index.html)** — the actual talk deck. Self-contained HTML, no internet required, works in Chrome on Android tablet. 15 slides. Drop it on your tablet and open. See [images/README.md](images/README.md) for how to add the imagery.
+- **[index.html](index.html)** — the actual talk deck. Self-contained HTML, no internet required, works in Chrome on Android tablet. 15 slides. Drop it on your tablet and open. See [images/README.md](images/README.md) for how to add the imagery.
 - **[speaker-notes.md](speaker-notes.md)** — what you'll have in front of you on stage. Timing map, segment-by-segment notes, demo blocking, failure fallbacks. The HTML deck also embeds these notes — press `S` during the presentation to toggle a presenter overlay.
 - **[slides.md](slides.md)** — slide-by-slide spec that the HTML was built from. Keep as reference / single source of truth when editing.
 - **[challenge-card.md](challenge-card.md)** — the take-home challenge rules, paste-ready IG post, and open decisions (payment method).
@@ -14,11 +14,11 @@ International Glitch Festival · Glitch Cult strand
 ## Presenting from your Android tablet
 
 1. Copy this whole folder (HTML + images/) onto your tablet (USB, cloud, Syncthing, whatever).
-2. Open `presentation.html` in **Chrome**.
+2. Open `index.html` in **Chrome**.
 3. Tap the fullscreen button in Chrome's menu (or press F if you have a keyboard).
 4. **Tap the right two-thirds** of the screen to advance, **left third** to go back. Swipe works too.
 5. To see your notes: press `S` (with a keyboard) or navigate with one finger while checking printed notes. For a full presenter view you'd need a second screen.
-6. **Backup:** print `presentation.html` to PDF from Chrome as a fallback. The CSS has a print media query that flattens the deck to one slide per page.
+6. **Backup:** print `index.html` to PDF from Chrome as a fallback. The CSS has a print media query that flattens the deck to one slide per page.
 
 ### Keyboard shortcuts (if you use a BT keyboard / clicker)
 | Key | Action |
