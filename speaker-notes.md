@@ -76,7 +76,7 @@ Click to slide 2.
 
 - "before any of this. before glitch, before coding art. I started as a photographer. 2012."
 - *(Pause.)*
-- "it was kind of a hunch — someone asked me for a christmas present idea and I thought a camera would be cool. turns out it was way more than cool."
+- "it was kind of a hunch — parents asked me for a christmas present idea and I thought a camera would be cool. turns out it was way more than cool."
 - "for the next few years I was obsessed. tens of thousands of photos, mostly on long walks around Brno."
 - *(Click to slide 4.)*
 - "flowers, blossoms, pastel colour experiments..."
