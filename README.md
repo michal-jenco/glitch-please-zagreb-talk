@@ -85,9 +85,8 @@ On a phone: just tap the edges of the screen or swipe.
 ## 🙏 Thanks
 
 - **[@glitch_cult](https://instagram.com/glitch_cult)** for inviting me and organizing the whole festival
-- **[@GlitchGuild](https://instagram.com/glitchguild)** for being the community
 - **[@dreamco.exe](https://instagram.com/dreamco.exe)** for being the very first person to comment on my renaissance-era posts in late 2024 — *"❤️ beautiful!!"*
-- And everyone else who encouraged me during the 2024–25 return: @\_xavivx.xy · @canopyhighrise · @monce11o · @soma.artworks · @ays_roseee · @voidreaminal · @preposterousmusic · @creacha111 · @serselugetti · @82.rer
+- And everyone else who encouraged me during the 2024–25 return: @canopyhighrise · @monce11o · @dominikafab · @vary.aesthetic · @moonjelly.jpg
 - Shoutout to whoever made **D3lta, SLMMSK, Tlenogram, 8Bit Photo Lab, Vaporwavewalls, and OneLab** — those were my glitch universes for years
 
 ---
