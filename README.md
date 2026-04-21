@@ -82,6 +82,16 @@ On a phone: just tap the edges of the screen or swipe.
 
 ---
 
+## 📷 Photography archive
+
+The **Brno-era photographs** you saw in the first third of the deck (2012–2016) live on Facebook:
+
+**→ [facebook.com/michal.jenco.photography](https://www.facebook.com/michal.jenco.photography)**
+
+That page is the main online home for my photography portfolio — around a decade of work from before the glitch turn, still the most complete public archive of that chapter.
+
+---
+
 ## 🙏 Thanks
 
 - **[@glitch_cult](https://instagram.com/glitch_cult)** for inviting me and organizing the whole festival
