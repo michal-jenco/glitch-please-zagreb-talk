@@ -1,0 +1,1133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GLITCH PLEASE! — glitch talk · Michal Jenčo</title>
+<style>
+  /* ===== Tokens ===== */
+  :root {
+    --bg: #000;
+    --fg: #f0f0f0;
+    --dim: #8a8a8a;
+    --purple: #C278FF;
+    --magenta: #FF3EE1;
+    --cyan: #4BA3FF;
+    --frame: #6a3dcf;
+    --mono: 'IBM Plex Mono', 'JetBrains Mono', 'Menlo', 'Consolas', ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--bg); color: var(--fg);
+    font-family: var(--mono);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    touch-action: manipulation;
+  }
+  body { user-select: none; }
+
+  /* ===== Deck ===== */
+  #deck { position: fixed; inset: 0; }
+
+  .slide {
+    position: absolute; inset: 0;
+    display: none;
+    padding: 5vmin;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .slide.active { display: flex; }
+
+  /* ===== Reusable ===== */
+  .frame {
+    position: absolute; inset: 2.5vmin;
+    border: 2px solid var(--frame);
+    border-radius: 4px;
+    pointer-events: none;
+  }
+  .pagenum {
+    position: absolute; bottom: 1.5vmin; right: 2vmin;
+    font-size: 1.5vmin; color: var(--dim); letter-spacing: 0.2em;
+  }
+  .title-mono {
+    font-size: 7vmin; font-weight: 700; letter-spacing: 0.02em;
+    color: var(--purple); text-transform: uppercase;
+  }
+  .sub-mono { font-size: 2.2vmin; color: var(--dim); letter-spacing: 0.15em; }
+  .caption-mono { font-size: 1.8vmin; color: var(--dim); letter-spacing: 0.1em; }
+
+  .bleed-image {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+  .image-placeholder {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background:
+      repeating-linear-gradient(45deg, #111 0 20px, #0a0a0a 20px 40px);
+    color: var(--magenta);
+    font-size: 2.2vmin;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    z-index: 0;
+  }
+  .image-placeholder::before {
+    content: '⚠ IMAGE: ' attr(data-name);
+    border: 2px dashed var(--magenta);
+    padding: 2vmin 3vmin;
+  }
+  .on-top { position: relative; z-index: 2; }
+
+  /* ===== Slide: title ===== */
+  .s-title { text-align: left; align-items: flex-start; justify-content: center; padding: 10vmin; }
+  .s-title .title-bg {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0.22;
+    filter: blur(1.5px) saturate(0.85);
+    z-index: 0;
+  }
+  .s-title::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.75) 70%);
+    z-index: 1;
+    pointer-events: none;
+  }
+  .s-title > *:not(.title-bg) { position: relative; z-index: 2; }
+  .s-title .bracket { color: var(--magenta); font-size: 3vmin; letter-spacing: 0.3em; margin-bottom: 2vmin; }
+  .s-title h1 {
+    font-size: 10vmin; line-height: 1; font-weight: 800;
+    color: var(--fg); letter-spacing: -0.02em;
+    text-transform: uppercase;
+    margin-bottom: 2vmin;
+  }
+  .s-title h2 { font-size: 4vmin; color: var(--purple); font-weight: 400; margin-bottom: 6vmin; text-transform: lowercase; letter-spacing: 0.05em; }
+  .s-title .meta { font-size: 2.2vmin; color: var(--dim); letter-spacing: 0.15em; line-height: 1.8; }
+  .s-title .meta strong { color: var(--fg); font-weight: 500; }
+  .s-title .meta .ig { color: var(--magenta); font-weight: 700; }
+  .s-title .title-qr {
+    position: absolute; right: 7vmin; top: 50%; transform: translateY(-50%);
+    z-index: 3; text-align: center;
+  }
+  .s-title .title-qr .qr-box {
+    width: 22vmin; height: 22vmin;
+    background: #fff; color: #000;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.6vmin; text-align: center; letter-spacing: 0.1em;
+    padding: 1vmin; overflow: hidden;
+    border: 2px dashed var(--magenta);
+  }
+  .s-title .title-qr .qr-box img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .s-title .title-qr .qr-caption {
+    font-size: 1.4vmin; color: var(--fg); letter-spacing: 0.15em;
+    margin-top: 1.2vmin; text-transform: uppercase;
+  }
+  .s-title .title-qr .qr-caption .hl { color: var(--magenta); }
+
+  /* ===== Slide: full-bleed image (cold open / spark / Q&A) ===== */
+  .s-bleed { padding: 0; justify-content: flex-end; align-items: flex-end; }
+  .s-bleed .overlay {
+    position: absolute; bottom: 5vmin; right: 5vmin;
+    background: rgba(0,0,0,0.72); padding: 2vmin 3vmin;
+    border-left: 3px solid var(--purple);
+    text-align: left; z-index: 2;
+    max-width: 50vw;
+  }
+  .s-bleed .overlay .line { font-size: 2vmin; color: var(--fg); letter-spacing: 0.1em; }
+  .s-bleed .overlay .line + .line { margin-top: 0.6vmin; }
+  .s-bleed .overlay .accent { color: var(--magenta); }
+
+  /* ===== Slide: two tracks (split) ===== */
+  .s-split { padding: 0; }
+  .s-split .half {
+    flex: 1; height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 6vmin;
+    position: relative;
+    z-index: 1;
+  }
+  .s-split .half:first-child { border-right: 1px solid var(--frame); }
+  .s-split .half .label { font-size: 2vmin; color: var(--dim); letter-spacing: 0.3em; margin-bottom: 3vmin; }
+  .s-split .half .big { font-size: 6vmin; font-weight: 800; color: var(--purple); letter-spacing: 0.05em; text-transform: uppercase; }
+  .s-split .half .year { font-size: 3vmin; color: var(--magenta); margin-top: 4vmin; letter-spacing: 0.1em; }
+  .s-split .row { display: flex; width: 100%; height: 100%; }
+
+  /* ===== Slide: image grid 2x2 ===== */
+  .s-grid .frame-inner {
+    position: absolute; inset: 8vmin 5vmin 15vmin 5vmin;
+    display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
+    gap: 1vmin;
+    z-index: 1;
+  }
+  .s-grid .cell { position: relative; overflow: hidden; background: #0a0a0a; }
+  .s-grid .cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .s-grid .cell .image-placeholder { position: absolute; inset: 0; }
+  .s-grid .cell .cell-caption {
+    position: absolute; bottom: 0.8vmin; left: 1vmin;
+    font-size: 1.4vmin; color: var(--fg);
+    background: rgba(0,0,0,0.7); padding: 0.3vmin 0.8vmin;
+    letter-spacing: 0.1em;
+  }
+  .s-grid .heading {
+    position: absolute; top: 2vmin; left: 5vmin; right: 5vmin;
+    font-size: 3vmin; font-weight: 700; color: var(--purple);
+    text-transform: uppercase; letter-spacing: 0.15em;
+    z-index: 2;
+  }
+  .s-grid .subheading {
+    position: absolute; bottom: 2vmin; left: 5vmin; right: 5vmin;
+    font-size: 1.8vmin; color: var(--dim); letter-spacing: 0.15em;
+    z-index: 2;
+    text-align: left;
+  }
+
+  /* ===== Slide: text block (Track B) ===== */
+  .s-textblock { text-align: left; align-items: flex-start; justify-content: center; padding: 10vmin; }
+  .s-textblock .kicker { font-size: 2vmin; color: var(--magenta); letter-spacing: 0.3em; margin-bottom: 3vmin; text-transform: uppercase; }
+  .s-textblock .line { font-size: 3.5vmin; color: var(--fg); line-height: 1.6; margin-bottom: 1vmin; }
+  .s-textblock .line .year { color: var(--purple); display: inline-block; width: 5em; }
+  .s-textblock .footer { font-size: 2.2vmin; color: var(--dim); margin-top: 5vmin; letter-spacing: 0.1em; font-style: italic; }
+
+  /* ===== Slide: spark caption ===== */
+  .s-spark .spark-caption {
+    position: absolute; bottom: 6vmin; right: 6vmin;
+    text-align: right;
+    background: rgba(0,0,0,0.85); padding: 2.5vmin 3vmin;
+    border-right: 3px solid var(--magenta);
+    z-index: 2;
+    max-width: 45vw;
+  }
+  .s-spark .spark-caption .year { font-size: 1.8vmin; color: var(--dim); letter-spacing: 0.2em; margin-bottom: 1vmin; }
+  .s-spark .spark-caption .quote { font-size: 2.6vmin; color: var(--fg); line-height: 1.4; font-style: italic; }
+  .s-spark .spark-caption .quote .accent { color: var(--magenta); font-style: normal; }
+
+  /* ===== Slide: app reveal ===== */
+  .s-app { gap: 2vmin; padding: 3vmin; }
+  .s-app .icon {
+    width: 18vmin; height: 18vmin;
+    border-radius: 4vmin;
+    background: linear-gradient(135deg, var(--purple), var(--magenta));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10vmin; color: #000; font-weight: 800;
+    box-shadow: 0 0 40px rgba(194, 120, 255, 0.4);
+    flex-shrink: 0;
+  }
+  .s-app .icon img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; display: block; }
+  .s-app .wordmark { font-size: 7vmin; font-weight: 800; color: var(--fg); letter-spacing: -0.01em; text-transform: uppercase; }
+  .s-app .tag { font-size: 1.8vmin; color: var(--dim); letter-spacing: 0.25em; text-transform: uppercase; }
+
+  /* ===== Slide: chapter break (LIVE DEMO / YOUR TURN) ===== */
+  .s-chapter { justify-content: center; align-items: center; }
+  .s-chapter .word {
+    font-size: 16vmin; font-weight: 900;
+    color: var(--fg); letter-spacing: 0.04em; text-transform: uppercase;
+    position: relative;
+    text-shadow: 0 0 30px rgba(194, 120, 255, 0.3);
+  }
+  /* RGB split glitch */
+  .s-chapter .word::before,
+  .s-chapter .word::after {
+    content: attr(data-text);
+    position: absolute; left: 0; top: 0;
+    width: 100%; height: 100%;
+    mix-blend-mode: screen;
+  }
+  .s-chapter .word::before { color: var(--magenta); animation: rgb-shift-a 3s infinite steps(1); }
+  .s-chapter .word::after { color: var(--cyan); animation: rgb-shift-b 3s infinite steps(1); }
+  @keyframes rgb-shift-a {
+    0%, 92%, 100% { transform: translate(0,0); opacity: 0; }
+    93% { transform: translate(-4px, 1px); opacity: 0.8; }
+    94% { transform: translate(3px, -2px); opacity: 0.7; }
+    95% { transform: translate(-2px, 2px); opacity: 0; }
+  }
+  @keyframes rgb-shift-b {
+    0%, 92%, 100% { transform: translate(0,0); opacity: 0; }
+    93% { transform: translate(4px, -1px); opacity: 0.8; }
+    94% { transform: translate(-3px, 2px); opacity: 0.7; }
+    95% { transform: translate(2px, -2px); opacity: 0; }
+  }
+
+  /* ===== Slide: code ===== */
+  .s-code { padding: 4vmin; }
+  .s-code .code-heading {
+    font-size: 2vmin; color: var(--magenta); letter-spacing: 0.25em; margin-bottom: 2vmin;
+    align-self: flex-start;
+  }
+  .s-code pre {
+    width: 100%; max-width: 120vmin;
+    background: #0a0a0f;
+    border: 1px solid var(--frame);
+    padding: 3vmin 4vmin;
+    font-size: 2.3vmin; line-height: 1.55;
+    color: var(--fg);
+    text-align: left;
+    white-space: pre;
+    overflow: hidden;
+  }
+  .s-code .kw { color: var(--purple); }
+  .s-code .fn { color: var(--magenta); }
+  .s-code .num { color: var(--cyan); }
+  .s-code .comment { color: #555; font-style: italic; }
+  .s-code .str { color: #7dd88f; }
+  .s-code .hi { background: rgba(194, 120, 255, 0.12); border-left: 3px solid var(--purple); padding-left: 1vmin; margin-left: -1vmin; display: block; }
+
+  /* ===== Slide: challenge (split) ===== */
+  .s-challenge { padding: 0; }
+  .s-challenge .row { display: flex; width: 100%; height: 100%; }
+  .s-challenge .img-half { flex: 1; position: relative; overflow: hidden; }
+  .s-challenge .img-half img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .s-challenge .text-half {
+    flex: 1.2;
+    padding: 6vmin;
+    display: flex; flex-direction: column; justify-content: center;
+    align-items: flex-start;
+    text-align: left;
+    background: linear-gradient(90deg, #000 60%, #0a0215 100%);
+    border-left: 1px solid var(--frame);
+    position: relative; z-index: 1;
+  }
+  .s-challenge .hashtag { font-size: 3vmin; color: var(--magenta); margin-bottom: 3vmin; letter-spacing: 0.05em; font-weight: 700; }
+  .s-challenge .rule { font-size: 2.4vmin; color: var(--fg); margin-bottom: 1.2vmin; line-height: 1.4; }
+  .s-challenge .rule.dim { color: var(--dim); font-size: 2vmin; }
+  .s-challenge .rule .accent { color: var(--purple); font-weight: 700; }
+  .s-challenge .prizes { display: flex; gap: 2vmin; margin: 3vmin 0; }
+  .s-challenge .prize {
+    background: rgba(194,120,255,0.08); border: 1px solid var(--frame);
+    padding: 1.5vmin 2vmin; text-align: center;
+  }
+  .s-challenge .prize .place { font-size: 1.6vmin; color: var(--dim); letter-spacing: 0.2em; }
+  .s-challenge .prize .amount { font-size: 3.5vmin; color: var(--magenta); font-weight: 800; margin-top: 0.3vmin; }
+  .s-challenge .deadline { font-size: 2.2vmin; color: var(--fg); margin-top: 2vmin; letter-spacing: 0.05em; }
+  .s-challenge .deadline .accent { color: var(--magenta); font-weight: 700; }
+  .s-challenge .footer-row { margin-top: 3vmin; display: flex; align-items: center; gap: 3vmin; }
+  .s-challenge .qr {
+    width: 12vmin; height: 12vmin;
+    background: #fff; color: #000;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3vmin; text-align: center; letter-spacing: 0.1em;
+    padding: 0.5vmin;
+  }
+  .s-challenge .handle { font-size: 1.8vmin; color: var(--dim); letter-spacing: 0.1em; }
+
+  /* ===== Slide: thanks ===== */
+  .s-thanks { align-items: flex-start; text-align: left; padding: 10vmin; justify-content: center; }
+  .s-thanks h3 { font-size: 3vmin; color: var(--magenta); letter-spacing: 0.3em; margin-bottom: 5vmin; text-transform: uppercase; }
+  .s-thanks ul { list-style: none; }
+  .s-thanks li { font-size: 3.5vmin; color: var(--fg); margin-bottom: 1.5vmin; letter-spacing: 0.02em; }
+  .s-thanks li.dim { color: var(--dim); font-size: 2.5vmin; }
+  .s-thanks .sign { font-size: 3vmin; color: var(--purple); margin-top: 6vmin; font-style: italic; letter-spacing: 0.05em; }
+
+  /* ===== Body text blocks (used across content slides) ===== */
+  .body {
+    font-size: 2vmin;
+    line-height: 1.65;
+    color: var(--fg);
+    letter-spacing: 0.01em;
+    max-width: 90vw;
+  }
+  .body.dim { color: var(--dim); }
+  .body .hl { color: var(--magenta); }
+  .body .hl-purple { color: var(--purple); }
+  .body p + p { margin-top: 1.2vmin; }
+
+  .feature-list { list-style: none; display: flex; flex-direction: column; gap: 0.8vmin; max-width: 82vw; }
+  .feature-list li {
+    font-size: 1.7vmin; color: var(--fg); letter-spacing: 0.02em;
+    padding-left: 2vmin; position: relative; text-align: left;
+    line-height: 1.4;
+  }
+  .feature-list li::before {
+    content: '▸'; color: var(--magenta);
+    position: absolute; left: 0; top: 0;
+  }
+  .feature-list li .hl { color: var(--magenta); }
+
+  .inline-desc {
+    font-size: 1.6vmin; color: var(--dim);
+    letter-spacing: 0.1em; margin-top: 1vmin; text-transform: lowercase;
+  }
+
+  .code-explain {
+    position: absolute;
+    bottom: 3vmin; left: 4vmin; right: 4vmin;
+    background: rgba(194,120,255,0.06);
+    border-left: 3px solid var(--purple);
+    padding: 1.8vmin 2.2vmin;
+    font-size: 1.7vmin; line-height: 1.55;
+    color: var(--dim);
+    letter-spacing: 0.02em;
+    text-align: left;
+    max-width: 120vmin;
+    margin: 0 auto;
+  }
+  .code-explain strong { color: var(--fg); font-weight: 500; }
+  .code-explain .hl { color: var(--magenta); }
+
+  /* ===== Slide: Q&A ===== */
+  .s-qna .qna-text {
+    position: absolute; bottom: 6vmin; left: 6vmin;
+    background: rgba(0,0,0,0.8); padding: 2vmin 3vmin;
+    border-left: 3px solid var(--purple);
+    z-index: 2;
+    text-align: left;
+  }
+  .s-qna .qna-text h4 { font-size: 5vmin; color: var(--fg); letter-spacing: 0.1em; margin-bottom: 1vmin; }
+  .s-qna .qna-text .handle { font-size: 1.8vmin; color: var(--dim); letter-spacing: 0.1em; }
+
+  /* ===== Progress & HUD ===== */
+  #progress {
+    position: fixed; top: 0; left: 0;
+    height: 3px;
+    background: var(--purple);
+    z-index: 100;
+    transition: width 0.3s ease;
+  }
+  #hud {
+    position: fixed; bottom: 1vmin; left: 2vmin;
+    font-size: 1.4vmin; color: var(--dim); letter-spacing: 0.2em;
+    z-index: 100; pointer-events: none;
+    opacity: 0; transition: opacity 0.3s;
+  }
+  body:hover #hud { opacity: 0.7; }
+
+  /* ===== Presenter overlay ===== */
+  #presenter {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.95);
+    z-index: 200;
+    display: none;
+    padding: 5vmin;
+    flex-direction: column;
+    gap: 2vmin;
+  }
+  #presenter.show { display: flex; }
+  #presenter .p-header { display: flex; justify-content: space-between; align-items: baseline; }
+  #presenter .p-header h2 { font-size: 3vmin; color: var(--magenta); letter-spacing: 0.2em; }
+  #presenter .p-header .p-num { font-size: 2.5vmin; color: var(--purple); }
+  #presenter .p-notes {
+    flex: 1;
+    background: #0a0a0f;
+    border: 1px solid var(--frame);
+    padding: 3vmin;
+    overflow-y: auto;
+    font-size: 2.2vmin;
+    line-height: 1.6;
+    color: var(--fg);
+    white-space: pre-wrap;
+  }
+  #presenter .p-next {
+    background: #05050a;
+    border: 1px solid var(--frame);
+    padding: 2vmin;
+    font-size: 1.8vmin;
+    color: var(--dim);
+  }
+  #presenter .p-next .label { color: var(--magenta); letter-spacing: 0.2em; margin-bottom: 0.5vmin; }
+  #presenter .p-help { font-size: 1.5vmin; color: var(--dim); letter-spacing: 0.15em; text-align: right; }
+
+  /* ===== Help overlay ===== */
+  #help {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.95);
+    z-index: 300;
+    display: none;
+    padding: 8vmin;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2vmin;
+    text-align: center;
+  }
+  #help.show { display: flex; }
+  #help h2 { font-size: 4vmin; color: var(--purple); letter-spacing: 0.15em; margin-bottom: 3vmin; }
+  #help dl { display: grid; grid-template-columns: auto auto; gap: 1.5vmin 4vmin; font-size: 2.5vmin; }
+  #help dt { color: var(--magenta); font-weight: 700; letter-spacing: 0.1em; }
+  #help dd { color: var(--fg); letter-spacing: 0.05em; }
+
+  /* ===== Screen reader only ===== */
+  .sr { position: absolute; left: -9999px; }
+
+  /* ===== Print (PDF export) ===== */
+  @media print {
+    html, body { overflow: visible; }
+    .slide { display: flex !important; page-break-after: always; position: relative; width: 100vw; height: 100vh; }
+    #progress, #hud, #presenter, #help { display: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="deck">
+
+  <!-- ============================================================
+       SLIDE 1 — TITLE
+       ============================================================ -->
+  <section class="slide s-title" data-notes="Cold open: walk on, let the room settle, do NOT start until it's quiet. Hold this slide 10 seconds. The vaporwave gif plays dimmed behind the title — when you click to slide 2 it ramps up to full brightness.">
+    <img class="title-bg" src="images/vaporwave.gif" alt="">
+    <div class="frame"></div>
+    <div class="bracket">[ GLITCH PLEASE! APP ]</div>
+    <h1>GLITCH PLEASE!</h1>
+    <h2>— glitch talk —</h2>
+    <div class="meta">
+      <strong>MICHAL JENČO</strong> · <span class="ig">@michal.jenco</span><br>
+      International Glitch Festival 2026<br>
+      Zagreb · 24 April · 19:30
+    </div>
+    <div class="body dim" style="margin-top: 5vmin; max-width: 55vw;">
+      <p>my weird 14-year path from photographer<br>
+      to glitch-app user to guy who writes his own glitch code.</p>
+      <p style="margin-top: 2vmin; color: var(--magenta);">30 min · some story, some live demo, take-home challenge at the end</p>
+    </div>
+    <div class="title-qr">
+      <div class="qr-box">
+        <img src="images/repo-qr.png" alt="" onerror="this.style.display='none'; this.parentElement.textContent='QR';">
+      </div>
+      <div class="qr-caption">scan for <span class="hl">the deck + the .apk</span></div>
+    </div>
+    <div class="pagenum">01 / 21</div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 2 — TWO TRACKS
+       ============================================================ -->
+  <section class="slide s-split" data-notes="Structural slide — click through in 3-4 seconds. 'Two tracks. Artist since 2016. Coder since 2017. For most of the decade they lived in separate rooms.'">
+    <div class="frame"></div>
+    <div class="row">
+      <div class="half">
+        <div class="label">TRACK A</div>
+        <div class="big">ARTIST</div>
+        <div class="year">2016 →</div>
+        <div class="body dim" style="margin-top: 4vmin; max-width: 32vw; text-align: center;">
+          used glitch apps on my phone.<br>
+          never coded any effects myself.
+        </div>
+      </div>
+      <div class="half">
+        <div class="label">TRACK B</div>
+        <div class="big">CODER</div>
+        <div class="year">2017 →</div>
+        <div class="body dim" style="margin-top: 4vmin; max-width: 32vw; text-align: center;">
+          CS degree, then python at work.<br>
+          never made anything visual.
+        </div>
+      </div>
+    </div>
+    <div class="body" style="position: absolute; bottom: 5vmin; left: 0; right: 0; text-align: center; color: var(--dim);">
+      for like 10 years these two just didn't talk to each other
+    </div>
+    <div class="pagenum">02 / 21</div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 3 (NEW) — PHOTOGRAPHY (2012 →) · THE CAMERA
+       ============================================================ -->
+  <section class="slide s-textblock" data-notes="NEW 2012 beat. 2 min total across 4 slides. 'Before any of this, before glitch, before coding art, I started as a photographer. 2012. It was kind of a hunch — someone asked me for a christmas present idea and I thought a camera would be cool. Turns out it was more than cool. For the next few years I was obsessed. Tens of thousands of photos, mostly on long walks around Brno.' Then click through grids 4-6. End the segment with: 'I posted all this on facebook, basically stopped in maybe 2016-ish. But those 4 years are why I can compose a frame. Every glitch I make later is standing on top of this practice.'">
+    <img class="title-bg" src="images/photos/565708447_10235048668311370_613998347547047973_n.jpg" alt="">
+    <div class="frame"></div>
+    <div class="kicker">2012 · the camera</div>
+    <div class="line" style="font-size: 5.5vmin; color: var(--purple);">before any of this, a photographer.</div>
+    <div class="body dim" style="margin-top: 3vmin; max-width: 80vw;">
+      <p>someone asked me for a christmas present idea in 2012 and I somehow thought <span class="hl">a camera</span> would be cool. turns out it was more than cool.</p>
+      <p>for the next few years I was obsessed. tens of thousands of photos, mostly on <span class="hl-purple">long walks around Brno</span>.</p>
+      <p style="margin-top: 2vmin;">posted it all on facebook, basically stopped around 2016. but those 4 years are why I can compose a frame. <span class="hl">every glitch I make later stands on top of this.</span></p>
+    </div>
+    <div class="body dim" style="position: absolute; bottom: 4vmin; right: 4vmin; font-size: 1.3vmin; letter-spacing: 0.1em;">
+      archive: facebook.com/michal.jenco.photography
+    </div>
+    <div class="pagenum">03 / 21</div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 4 (NEW) — BRNO WALKS · COLOUR & BLOOM
+       ============================================================ -->
+  <section class="slide s-grid" data-notes="30 sec. 'Flowers, blossoms, pastel colour experiments.' Click through briskly — the image does the work.">
+    <div class="frame"></div>
+    <div class="heading">Brno walks · colour &amp; bloom</div>
+    <div class="frame-inner">
+      <div class="cell">
+        <img src="images/photos/492057170_10232530942689803_6611243653909210443_n.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="photos/492057170.jpg" style="display:none;"></div>
+      </div>
+      <div class="cell">
+        <img src="images/photos/492463517_10232566726424374_4229114247213889840_n.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="photos/492463517.jpg" style="display:none;"></div>
+      </div>
+      <div class="cell">
+        <img src="images/photos/492373490_10232530942489798_3475844812029381915_n.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="photos/492373490.jpg" style="display:none;"></div>
+      </div>
+      <div class="cell">
+        <img src="images/photos/492395772_10232530943049812_4328774072197724687_n.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="photos/492395772.jpg" style="display:none;"></div>
+      </div>
+    </div>
+    <div class="subheading" style="font-size: 1.7vmin; line-height: 1.5; max-width: 90vw;">
+      blossoms, flowers, pastel colour experiments · Brno, 2012–2016
+    </div>
+    <div class="pagenum">04 / 21</div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 5 (NEW) — BRNO WALKS · CITY & MOOD
+       ============================================================ -->
+  <section class="slide s-grid" data-notes="30 sec. 'City at night, walks home after dark, moody stuff.' Click through briskly.">
+    <div class="frame"></div>
+    <div class="heading">Brno walks · city &amp; mood</div>
+    <div class="frame-inner">
+      <div class="cell">
+        <img src="images/photos/573063697_10235210239270543_4912166296856336697_n.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="photos/573063697.jpg" style="display:none;"></div>
+      </div>
+      <div class="cell">
+        <img src="images/photos/568345519_10235072686071799_5733989992878697502_n.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="photos/568345519.jpg" style="display:none;"></div>
+      </div>
+      <div class="cell">
+        <img src="images/photos/568427188_10235072686431808_4321642586818715972_n.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="photos/568427188.jpg" style="display:none;"></div>
+      </div>
+      <div class="cell">
+        <img src="images/photos/573584370_10235210238790531_9057486844307037993_n.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="photos/573584370.jpg" style="display:none;"></div>
+      </div>
+    </div>
+    <div class="subheading" style="font-size: 1.7vmin; line-height: 1.5; max-width: 90vw;">
+      the city at night, walks home after dark, quiet streets · Brno, 2012–2016
+    </div>
+    <div class="pagenum">05 / 21</div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 6 (NEW) — BRNO WALKS · CLOSE &amp; QUIET
+       ============================================================ -->
+  <section class="slide s-grid" data-notes="30 sec. 'Leaves, dried flowers, details you'd miss if you weren't paying attention.' Then wrap: 'I stopped around 2016. But this is why I can compose a frame — every glitch stands on top of this.'">
+    <div class="frame"></div>
+    <div class="heading">Brno walks · close &amp; quiet</div>
+    <div class="frame-inner">
+      <div class="cell">
+        <img src="images/photos/492196927_10232507246617416_2214987444488405092_n.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="photos/492196927.jpg" style="display:none;"></div>
+      </div>
+      <div class="cell">
+        <img src="images/photos/492401899_10232518015206624_6224073596189804292_n.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="photos/492401899.jpg" style="display:none;"></div>
+      </div>
+      <div class="cell">
+        <img src="images/photos/568260419_10235072686631813_6969895676971957801_n.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="photos/568260419.jpg" style="display:none;"></div>
+      </div>
+      <div class="cell">
+        <img src="images/photos/561349757_10235027904232281_4939709306186050781_n.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="photos/561349757.jpg" style="display:none;"></div>
+      </div>
+    </div>
+    <div class="subheading" style="font-size: 1.7vmin; line-height: 1.5; max-width: 90vw;">
+      leaves, dried flowers, shadows · the details you'd miss if you weren't paying attention
+    </div>
+    <div class="pagenum">06 / 21</div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 7 — TRACK A: 2016 GRID
+       ============================================================ -->
+  <section class="slide s-grid" data-notes="Point at each image and name the aesthetic family: symmetry / VHS / halftone / overlay. 'My first apps were D3lta, SLMMSK, Tlenogram, 8Bit Photo Lab. OG stuff. Each one was a universe, not a filter.'">
+    <div class="frame"></div>
+    <div class="heading">2016 · the apps that hooked me</div>
+    <div class="frame-inner">
+      <div class="cell">
+        <img src="images/tlenogram.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="tlenogram.jpg" style="display:none;"></div>
+        <div class="cell-caption">Tlenogram</div>
+      </div>
+      <div class="cell">
+        <img src="images/D3lta/482343514_10232018875328439_4696951549519521730_n.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="D3lta/482343514_10232018875328439_4696951549519521730_n.jpg" style="display:none;"></div>
+        <div class="cell-caption">D3lta</div>
+      </div>
+      <div class="cell">
+        <img src="images/slmmsk.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="slmmsk.jpg" style="display:none;"></div>
+        <div class="cell-caption">SLMMSK</div>
+      </div>
+      <div class="cell">
+        <img src="images/8bitphotolab/486951188_10232240173820763_1693946606614518389_n.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="8bitphotolab/486951188_10232240173820763_1693946606614518389_n.jpg" style="display:none;"></div>
+        <div class="cell-caption">8Bit Photo Lab</div>
+      </div>
+    </div>
+    <div class="subheading" style="font-size: 1.7vmin; line-height: 1.5; max-width: 90vw;">
+      in 2016 I was a glitch <span style="color: var(--magenta);">user</span>, not a glitch coder. each app was its own universe. I just wanted to live in them.
+    </div>
+    <div class="pagenum">07 / 21</div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 8 — TRACK B: PROFESSIONAL CODER
+       ============================================================ -->
+  <section class="slide s-textblock" data-notes="1:30. 'Meanwhile, on a different track — I graduated computer engineering in 2017, writing Python professionally ever since. Hobby coding — I handcoded a MIDI sequencer in Python over months around 2019. None of it looked like glitch art. Same person, two rooms.' DO NOT say 'zero glitch code ever' — slide 6 is about to complicate that.">
+    <div class="frame"></div>
+    <div class="kicker">TRACK B · the day-job coder</div>
+    <div class="line"><span class="year">2017</span>graduated computer engineering</div>
+    <div class="line"><span class="year">2017 →</span>python at work, multiple different jobs</div>
+    <div class="line"><span class="year">2019</span>spent months handcoding a MIDI sequencer as a hobby</div>
+    <div class="body dim" style="margin-top: 4vmin; max-width: 70vw;">
+      <p>work was mostly pipelines and backends, nothing visual. the sequencer was fun but it's just notes and timing, no pixels involved.</p>
+      <p>so I made images on my phone and wrote code in a terminal, and those two things <span class="hl">basically didn't overlap.</span></p>
+    </div>
+    <div class="footer">same person, two hobbies, they just never met</div>
+    <div class="pagenum">08 / 21</div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 9 — COMPUTERART2018 (the dormant seed) — 2x2 GRID
+       ============================================================ -->
+  <section class="slide s-grid" data-notes="THE MOST IMPORTANT NEW SLIDE. Stay on it the full 2 minutes. 'Except — I just realised telling you this — there was one thing that did sit in the middle of those two rooms. Back in 2018 I made a small side project called ComputerArt2018. An image generator built on math functions. Particle swarms. Lissajous curves. Procedural dot grids. I showed nobody, saved the outputs, and moved on. FORGOT about it. For seven years.' Let the silence do the work after 'forgot.'">
+    <div class="frame"></div>
+    <div class="heading" style="color: var(--magenta);">ComputerArt2018 · the dormant seed</div>
+    <div class="frame-inner">
+      <div class="cell">
+        <img src="images/47577122_10215590110299581_3331538584556535808_n.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="47577122_10215590110299581_3331538584556535808_n.jpg" style="display:none;"></div>
+        <div class="cell-caption">particle swarm</div>
+      </div>
+      <div class="cell">
+        <img src="images/47423402_10215590981721366_2429284677152931840_n.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="47423402_10215590981721366_2429284677152931840_n.jpg" style="display:none;"></div>
+        <div class="cell-caption">procedural dot grid</div>
+      </div>
+      <div class="cell">
+        <img src="images/47684833_10215590981401358_120444884573224960_n.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="47684833_10215590981401358_120444884573224960_n.jpg" style="display:none;"></div>
+        <div class="cell-caption">halftone dots</div>
+      </div>
+      <div class="cell">
+        <img src="images/47436207_10215590109139552_838048209367465984_n.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="47436207_10215590109139552_838048209367465984_n.jpg" style="display:none;"></div>
+        <div class="cell-caption">Lissajous curves</div>
+      </div>
+    </div>
+    <div class="subheading" style="font-size: 1.7vmin; line-height: 1.5; max-width: 90vw;">
+      <span style="color: var(--magenta);">side project, year after graduating.</span>
+      python scripts generating images from math — particles, curves, tilings. <span style="color: var(--fg);">then I forgot about it for 7 years.</span>
+    </div>
+    <div class="pagenum">09 / 21</div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 10 — THE RETURN · 2024
+       ============================================================ -->
+  <section class="slide s-textblock" data-notes="CRUCIAL new beat. 1:30 min. 'After 2016 I just stopped glitching. Almost 8 full years, don't really know why. Then late 2024 I made a new glitch and posted it on instagram with the caption &quot;in my glitch art era (will last approximately 2 hours).&quot; That was 78 weeks ago — turns out it lasted way longer than 2 hours.' Mention the apps: Vaporwavewalls, OneLab, 8Bit Photo Lab (the same 8Bit Photo Lab from 2016 — still there). 'This time way more obsessed than in 2016. I even dug up my old 2009 glitches from my Sony Ericsson W910i and reposted them.'">
+    <div class="frame"></div>
+    <div class="kicker">THE RETURN · 2024</div>
+    <div class="line" style="font-size: 5.5vmin; color: var(--purple);">78 weeks ago...</div>
+    <div class="body dim" style="margin-top: 3vmin; max-width: 80vw;">
+      <p>after 2016 I just stopped. <span class="hl">no glitching for almost 8 years.</span> don't really know why, just stopped.</p>
+      <p>then one day in late 2024 I made a new glitch and posted it on instagram with the caption <em style="color: var(--fg);">"in my glitch art era (will last approximately 2 hours)"</em>. that was 78 weeks ago.</p>
+      <p>turns out it lasted way longer than 2 hours.</p>
+      <p style="margin-top: 2vmin;">this time I was using <span class="hl-purple">Vaporwavewalls · OneLab · 8Bit Photo Lab</span> (yep, the same 8Bit Photo Lab from 2016, still kicking). still not coding anything myself, still just a user. but this time got <span class="hl">way more obsessed</span> than in 2016.</p>
+    </div>
+    <div class="pagenum">10 / 21</div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 11 — FACES (2024–2025)
+       ============================================================ -->
+  <section class="slide s-grid" data-notes="1:00 min. 'Most of what I made in this era were face pieces. Portraits, selfies, anime characters. Bold duotone, halftone, RGB scanline stuff.' Flip through the grid visually; point at one or two. Could mention that the taste had grown in the 8 years away — these are more sophisticated than 2016.">
+    <div class="frame"></div>
+    <div class="heading">FACES · 2024–2025</div>
+    <div class="frame-inner">
+      <div class="cell">
+        <img src="images/glitches-from-2024/Screenshot 2026-04-21 at 21.37.52.png" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="glitches-from-2024/Screenshot 2026-04-21 at 21.37.52.png" style="display:none;"></div>
+        <div class="cell-caption">bold stripe</div>
+      </div>
+      <div class="cell">
+        <img src="images/glitches-from-2024/Screenshot 2026-04-21 at 21.38.07.png" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="glitches-from-2024/Screenshot 2026-04-21 at 21.38.07.png" style="display:none;"></div>
+        <div class="cell-caption">halftone</div>
+      </div>
+      <div class="cell">
+        <img src="images/glitches-from-2024/Screenshot 2026-04-21 at 21.39.50.png" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="glitches-from-2024/Screenshot 2026-04-21 at 21.39.50.png" style="display:none;"></div>
+        <div class="cell-caption">duotone</div>
+      </div>
+      <div class="cell">
+        <img src="images/glitches-from-2024/Screenshot 2026-04-21 at 21.40.09.png" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="glitches-from-2024/Screenshot 2026-04-21 at 21.40.09.png" style="display:none;"></div>
+        <div class="cell-caption">RGB scanline</div>
+      </div>
+    </div>
+    <div class="subheading" style="font-size: 1.7vmin; line-height: 1.5; max-width: 90vw;">
+      most of what I made were face pieces. all on my phone with <span style="color: var(--magenta);">Vaporwavewalls · OneLab · 8Bit Photo Lab</span>. no code yet.
+    </div>
+    <div class="pagenum">11 / 21</div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 12 — TEXT · SCULPTURE · ABSTRACT (2024–2025)
+       ============================================================ -->
+  <section class="slide s-grid" data-notes="0:45 min. 'And some pieces that weren't faces. Text collages, vaporwave compositions with classical sculptures, abstract experiments. I also dug up and reposted my old 2009 glitches from my Sony Ericsson W910i back in that era — full glitch archaeology phase.'">
+    <div class="frame"></div>
+    <div class="heading">NOT-FACES · 2024–2025</div>
+    <div class="frame-inner">
+      <div class="cell">
+        <img src="images/glitches-from-2024/Screenshot 2026-04-21 at 21.34.42.png" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="glitches-from-2024/Screenshot 2026-04-21 at 21.34.42.png" style="display:none;"></div>
+        <div class="cell-caption">text collage</div>
+      </div>
+      <div class="cell">
+        <img src="images/glitches-from-2024/Screenshot 2026-04-21 at 21.35.31.png" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="glitches-from-2024/Screenshot 2026-04-21 at 21.35.31.png" style="display:none;"></div>
+        <div class="cell-caption">repetition typography</div>
+      </div>
+      <div class="cell">
+        <img src="images/glitches-from-2024/Screenshot 2026-04-21 at 21.35.12.png" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="glitches-from-2024/Screenshot 2026-04-21 at 21.35.12.png" style="display:none;"></div>
+        <div class="cell-caption">vaporwave</div>
+      </div>
+      <div class="cell">
+        <img src="images/glitches-from-2024/Screenshot 2026-04-21 at 21.37.22.png" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="glitches-from-2024/Screenshot 2026-04-21 at 21.37.22.png" style="display:none;"></div>
+        <div class="cell-caption">classical / sculpture</div>
+      </div>
+    </div>
+    <div class="subheading" style="font-size: 1.7vmin; line-height: 1.5; max-width: 90vw;">
+      and the ones that weren't faces. text, vaporwave, sculpture, abstract. <span style="color: var(--fg);">also dug up my 2009 Sony Ericsson W910i glitches</span> — full archaeology phase.
+    </div>
+    <div class="pagenum">12 / 21</div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 13 — THE SPARK (2025)
+       ============================================================ -->
+  <section class="slide s-bleed s-spark" data-notes="TURNING POINT. Slow down. 'And then, 2025. Nothing dramatic happened. I wasn't frustrated. Nothing broke. I just had a thought.' PAUSE. 'What if I coded my own glitch algorithm.' 'And when I sat down at PyCharm — the math I used was the same math from ComputerArt2018, seven years earlier. Sine waves. Modulo arithmetic. Particle iteration. I had been generating images from math since 2018 — I just had never pointed it at an existing photograph before.' 'First serious result, I got something I had never seen in any app. Not D3lta, not SLMMSK, nowhere.' 'The door between the rooms had been open since 2018. I just hadn't walked through it.'">
+    <img class="bleed-image" src="images/1739923913-6 (1).png" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+    <div class="image-placeholder" data-name="1739923913-6 (1).png" style="display:none;"></div>
+    <div class="spark-caption">
+      <div class="year">2025 · one thought:</div>
+      <div class="quote">"what if I pointed that <span class="accent">math</span><br>at a <span class="accent">photograph</span>?"</div>
+      <div class="body dim" style="margin-top: 2vmin; font-size: 1.6vmin; font-style: normal; max-width: 40vw;">
+        opened pycharm, wrote a script that runs every pixel of a photo through some math (modulo, sin waves, that kind of thing). turned out to be basically the same math I used in 2018, just this time applied to an existing image instead of generating one from nothing. and <span class="hl">the first real output looked like nothing I'd seen in any app.</span>
+      </div>
+    </div>
+    <div class="pagenum">13 / 21</div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 14 — GLITCH PLEASE! REVEAL
+       ============================================================ -->
+  <section class="slide s-app" data-notes="Brand reveal. Hold 3 seconds before you speak. 'PyCharm scripts on my machine — nobody else could run them. So the next question was obvious: put it on a phone. Give it a UI. Let other artists play. Android, Kotlin, Jetpack Compose. This is Glitch Please! The two tracks finally on purpose.'">
+    <div class="frame"></div>
+    <div class="icon">
+      <img src="images/glitch-please-icon.png" alt="" onerror="this.style.display='none'; this.parentElement.textContent='G';">
+    </div>
+    <div class="wordmark">Glitch Please!</div>
+    <div class="tag">Android · Kotlin · Play Store</div>
+    <ul class="feature-list" style="margin-top: 3vmin;">
+      <li><span class="hl">37 glitch algorithms</span>, grouped into 7 families (Specialists, Classics, Wave Riders, Deep Glitch, Spacetime, Decay, Channel Dominance)</li>
+      <li><span class="hl">palette is a first-class thing</span> — extract from your image, generate random, remap everything</li>
+      <li><span class="hl">use any result as a new source</span> and glitch it again (this is my favorite feature honestly)</li>
+      <li><span class="hl">live editors</span> for VHS, Muse and Color Gate — scrub the params in real time</li>
+      <li><span class="hl">export video loops</span> where the params keep changing frame by frame</li>
+      <li><span class="hl">every result remembers how it was made</span>, so you can reproduce it later if you want</li>
+    </ul>
+    <div class="pagenum">14 / 21</div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 15 — LIVE DEMO
+       ============================================================ -->
+  <section class="slide s-chapter" data-notes="Click this, pick up phone, confirm mirror. 'Enough story. Let me show you what the two tracks built together.' If mirror fails: stay on this slide for 15 seconds while you plug in HDMI. Backup screen recording cued on laptop if needed.">
+    <div class="frame"></div>
+    <div class="word" data-text="LIVE DEMO">LIVE DEMO</div>
+    <div class="body dim" style="position: absolute; bottom: 10vmin; left: 0; right: 0; text-align: center; letter-spacing: 0.1em; font-size: 1.7vmin;">
+      next ~15 min is just me on my phone, mirrored up here<br>
+      <span style="color: var(--magenta);">load an image, glitch it, mess with palettes, feed results back in, play with live sliders, export a video loop, then one bit of code</span>
+    </div>
+    <div class="pagenum">15 / 21</div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 16 — HOLD (in case of demo reset)
+       ============================================================ -->
+  <section class="slide s-chapter" data-notes="Hold slide — identical to slide 15. Use if phone mirror needs a reset mid-demo. Audience shouldn't notice the difference. DEMO RUNS ON PHONE MIRROR: (1) load image + pick VHS/ColorGate, (2) palette extract + remap, (3) results grid + 'use result as source' + Image Details, (4) live editor scrubbing, (5) video loop export, (6) transition to code moment.">
+    <div class="frame"></div>
+    <div class="word" data-text="LIVE DEMO">LIVE DEMO</div>
+    <div class="body dim" style="position: absolute; bottom: 10vmin; left: 0; right: 0; text-align: center; letter-spacing: 0.1em; font-size: 1.7vmin;">
+      next ~15 min is just me on my phone, mirrored up here<br>
+      <span style="color: var(--magenta);">load an image, glitch it, mess with palettes, feed results back in, play with live sliders, export a video loop, then one bit of code</span>
+    </div>
+    <div class="pagenum">16 / 21</div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 17 — CODE MOMENT
+       ============================================================ -->
+  <section class="slide s-code" data-notes="Switch projector back to laptop. This is the ORIGINAL algorithm — the first one you ever coded, and still one of the signature looks of the app. Read the highlighted mod256 lines out loud: 'for every pixel, shift each channel by some math based on where it is, add a random nudge, and wrap at 256. When a byte overflows it loops back to 0 — and THAT wrap is the glitch.' Emphasise: no AI, no neural net. Pure pixel math. The byte overflow is what gives you the rainbow shimmer and hard color jumps.">
+    <div class="frame"></div>
+    <div class="code-heading">ORIGINAL algorithm · the first one I ever coded</div>
+    <pre><span class="kw">fun</span> <span class="fn">original</span>(r: Int, g: Int, b: Int, x: Int, y: Int,
+             variant: Int, p: Params, rand: Random): Triple {
+  <span class="comment">// shift each channel by different math based on pixel position</span>
+  <span class="kw">val</span> rShift = (x * p.wMult + variant * p.iMult) % p.rCycle * p.rMult
+  <span class="kw">val</span> gShift = y * p.hMult - variant * p.iMult
+  <span class="kw">val</span> bShift = (y % p.hCycle) * p.hMult - x * p.wMult
+
+<span class="hi">  <span class="comment">// add shift + random nudge, then wrap at 256 — byte overflow = the glitch</span>
+  <span class="kw">val</span> nr = <span class="fn">mod256</span>(r + rShift + rand.r)
+  <span class="kw">val</span> ng = <span class="fn">mod256</span>(g + gShift + rand.g)
+  <span class="kw">val</span> nb = <span class="fn">mod256</span>(b + bShift + rand.b)
+</span>
+  <span class="kw">return</span> <span class="fn">Triple</span>(nr, ng, nb)
+}</pre>
+    <div class="code-explain">
+      <strong>in plain english:</strong> for every pixel, take its R/G/B values and shift each one by a chunk of math based on its position in the image. add a random nudge. then <span class="hl">wrap the result at 256</span> — if the number goes over 255, it loops back to 0. <strong>that wrap is the glitch.</strong> the byte overflow is where the rainbow shimmer and hard color jumps come from, the feeling that something <em>broke</em>. millions of pixels doing this with slightly different math = the whole image bending.
+    </div>
+    <div class="pagenum">17 / 21</div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 18 — YOUR TURN
+       ============================================================ -->
+  <section class="slide s-chapter" data-notes="Pivot into the challenge. Breathe here. One beat of silence before the pitch.">
+    <div class="frame"></div>
+    <div class="word" data-text="YOUR TURN">YOUR TURN</div>
+    <div class="body dim" style="position: absolute; bottom: 10vmin; left: 0; right: 0; text-align: center; letter-spacing: 0.1em; font-size: 1.7vmin;">
+      <span style="color: var(--magenta);">you, the app, 48 hours, €60 to win</span><br>
+      take-home challenge, details on the next slide
+    </div>
+    <div class="pagenum">18 / 21</div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 19 — CHALLENGE
+       ============================================================ -->
+  <section class="slide s-challenge" data-notes="Pause after 'Deadline'. Let people photograph the slide. Don't rush. NOTE: the sculpture is the same image you were glitching in 2025 PyCharm — if the room's warm, say so: 'when you open the app, you're literally starting where I started.'">
+    <div class="row">
+      <div class="img-half">
+        <img src="images/default-sculpture.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-placeholder" data-name="default-sculpture.jpg" style="display:none;"></div>
+      </div>
+      <div class="text-half">
+        <div class="hashtag">#glitchpleasechallenge2026</div>
+        <div class="rule"><span class="accent">GLITCH</span> this image.</div>
+        <div class="rule dim">single image, series, video or video grid, whatever you want</div>
+        <div class="rule" style="margin-top:2vmin;"><span class="accent">ONLY</span> the app — no photoshop or anything else</div>
+        <div class="rule dim">post it on instagram, tag me as collaborator (I auto-accept), use the hashtag</div>
+        <div class="prizes">
+          <div class="prize"><div class="place">1st</div><div class="amount">€30</div></div>
+          <div class="prize"><div class="place">2nd</div><div class="amount">€20</div></div>
+          <div class="prize"><div class="place">3rd</div><div class="amount">€10</div></div>
+        </div>
+        <div class="deadline">Deadline: <span class="accent">SUN 26 APR · midnight CET</span></div>
+        <div class="rule dim" style="margin-top: 1.5vmin; font-size: 1.6vmin;">
+          I pick the winners, it's subjective. bonus points for <span class="accent">recursive glitches</span>, cool <span class="accent">palette work</span>, <span class="accent">video loops</span>
+        </div>
+        <div class="rule dim" style="margin-top: 0.5vmin; font-size: 1.6vmin;">
+          winners announced Mon 27 Apr on my instagram
+        </div>
+        <div class="footer-row">
+          <div class="qr">
+            <img src="images/playstore-qr.png" alt="" style="width:100%;height:100%;" onerror="this.style.display='none'; this.parentElement.innerHTML='QR<br>→ Play Store';">
+          </div>
+          <div class="handle">@michaljenco</div>
+        </div>
+      </div>
+    </div>
+    <div class="pagenum">19 / 21</div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 20 — THANKS
+       ============================================================ -->
+  <section class="slide s-thanks" data-notes="Read the last line slowly. 'Let's break some pixels' echoes the festival poster — the audience will recognise it.">
+    <div class="frame"></div>
+    <h3>THANK YOU</h3>
+    <ul>
+      <li><span style="color: var(--magenta);">@glitch_cult</span> for having me and organizing all this</li>
+      <li><span style="color: var(--magenta);">@GlitchGuild</span> for being the community</li>
+      <li class="dim">shoutout to whoever made <span style="color: var(--fg);">D3lta, SLMMSK, Tlenogram, 8Bit Photo Lab, Vaporwavewalls and OneLab</span><br>those were my glitch universes for years</li>
+      <li class="dim" style="margin-top: 1.5vmin;">and the biggest thank you — <span style="color: var(--purple);">my renaissance-era cheerleaders on instagram:</span></li>
+      <li style="font-size: 1.8vmin; color: var(--magenta); margin-top: 0.5vmin; line-height: 1.7; letter-spacing: 0.02em;">
+        @dreamco.exe <span class="dim" style="font-size: 1.3vmin;">(first to comment — "beautiful!!")</span><br>
+        @_xavivx.xy · @canopyhighrise · @monce11o · @soma.artworks<br>
+        @ays_roseee · @voidreaminal · @preposterousmusic<br>
+        @creacha111 · @serselugetti · @82.rer
+      </li>
+    </ul>
+    <div class="sign">Let's break some pixels. ⚡</div>
+    <div class="pagenum">20 / 21</div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 21 — Q&A
+       ============================================================ -->
+  <section class="slide s-bleed s-qna" data-notes="If no hands go up, self-serve with: 'I'll start with one — why Android and not web?' and answer in 30 seconds.">
+    <img class="bleed-image" src="images/final-piece.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+    <div class="image-placeholder" data-name="final-piece.jpg" style="display:none;"></div>
+    <div class="qna-text">
+      <h4>Q&amp;A</h4>
+      <div class="body dim" style="font-size: 1.6vmin; margin-top: 1vmin; max-width: 55vw;">
+        stuff people usually ask:
+        <span style="color: var(--magenta);">why android and not web?</span>
+        <span style="color: var(--purple);"> · </span>
+        <span style="color: var(--magenta);">iOS when?</span>
+        <span style="color: var(--purple);"> · </span>
+        <span style="color: var(--magenta);">is it open source?</span>
+        <span style="color: var(--purple);"> · </span>
+        <span style="color: var(--magenta);">what are you adding next?</span>
+        <span style="color: var(--purple);"> · </span>
+        <span style="color: var(--magenta);">can I use it commercially?</span>
+      </div>
+      <div class="handle" style="margin-top: 1.5vmin;">@michaljenco · Glitch Please! on Play Store · #glitchpleasechallenge2026</div>
+    </div>
+    <div class="pagenum">21 / 21</div>
+  </section>
+
+</div>
+
+<div id="progress"></div>
+<div id="hud">← → navigate · S presenter · ? help · F fullscreen</div>
+
+<div id="presenter">
+  <div class="p-header">
+    <h2 id="p-title">PRESENTER NOTES</h2>
+    <div class="p-num" id="p-num">0 / 0</div>
+  </div>
+  <div class="p-notes" id="p-notes">—</div>
+  <div class="p-next">
+    <div class="label">NEXT →</div>
+    <div id="p-next">—</div>
+  </div>
+  <div class="p-help">S = toggle presenter · Esc = exit</div>
+</div>
+
+<div id="help">
+  <h2>KEYBOARD &amp; TOUCH</h2>
+  <dl>
+    <dt>→ · SPACE · tap right</dt><dd>next slide</dd>
+    <dt>← · tap left</dt><dd>previous slide</dd>
+    <dt>S</dt><dd>toggle presenter notes</dd>
+    <dt>F</dt><dd>toggle fullscreen</dd>
+    <dt>B</dt><dd>black out screen</dd>
+    <dt>HOME · END</dt><dd>jump to first/last</dd>
+    <dt>1–9</dt><dd>jump to slide N</dd>
+    <dt>? · H</dt><dd>this help</dd>
+    <dt>Esc</dt><dd>close overlay</dd>
+  </dl>
+</div>
+
+<script>
+(function() {
+  const deck = document.getElementById('deck');
+  const slides = Array.from(deck.querySelectorAll('.slide'));
+  const progress = document.getElementById('progress');
+  const presenter = document.getElementById('presenter');
+  const pNotes = document.getElementById('p-notes');
+  const pNum = document.getElementById('p-num');
+  const pNext = document.getElementById('p-next');
+  const help = document.getElementById('help');
+
+  let idx = 0;
+  let blackout = false;
+
+  function show(n) {
+    n = Math.max(0, Math.min(slides.length - 1, n));
+    slides[idx].classList.remove('active');
+    idx = n;
+    slides[idx].classList.add('active');
+    progress.style.width = ((idx + 1) / slides.length * 100) + '%';
+    updatePresenter();
+    try { history.replaceState(null, '', '#' + (idx + 1)); } catch(e) {}
+  }
+
+  function updatePresenter() {
+    pNum.textContent = (idx + 1) + ' / ' + slides.length;
+    pNotes.textContent = slides[idx].dataset.notes || '(no notes)';
+    pNext.textContent = (idx + 1 < slides.length)
+      ? 'Slide ' + (idx + 2) + ' — ' + (slides[idx + 1].dataset.notes || '').slice(0, 120) + '…'
+      : '(end)';
+  }
+
+  function next() { show(idx + 1); }
+  function prev() { show(idx - 1); }
+
+  function togglePresenter() { presenter.classList.toggle('show'); }
+  function toggleHelp() { help.classList.toggle('show'); }
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen?.();
+    } else {
+      document.exitFullscreen?.();
+    }
+  }
+  function toggleBlackout() {
+    blackout = !blackout;
+    document.body.style.background = blackout ? '#000' : '';
+    document.getElementById('deck').style.visibility = blackout ? 'hidden' : '';
+  }
+
+  // Keyboard
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      presenter.classList.remove('show');
+      help.classList.remove('show');
+      return;
+    }
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
+    else if (e.key === 'Home') show(0);
+    else if (e.key === 'End') show(slides.length - 1);
+    else if (e.key === 's' || e.key === 'S') togglePresenter();
+    else if (e.key === 'f' || e.key === 'F') toggleFullscreen();
+    else if (e.key === 'b' || e.key === 'B') toggleBlackout();
+    else if (e.key === '?' || e.key === 'h' || e.key === 'H') toggleHelp();
+    else if (/^[1-9]$/.test(e.key)) show(parseInt(e.key, 10) - 1);
+  });
+
+  // Touch: tap left/right halves, swipe horizontally
+  let touchX = null;
+  deck.addEventListener('touchstart', (e) => {
+    touchX = e.changedTouches[0].clientX;
+  }, { passive: true });
+  deck.addEventListener('touchend', (e) => {
+    if (touchX === null) return;
+    const endX = e.changedTouches[0].clientX;
+    const dx = endX - touchX;
+    if (Math.abs(dx) > 50) {
+      // swipe
+      if (dx < 0) next(); else prev();
+    } else {
+      // tap: left third = prev, right two thirds = next
+      const w = window.innerWidth;
+      if (endX < w / 3) prev(); else next();
+    }
+    touchX = null;
+  }, { passive: true });
+
+  // Click (desktop)
+  deck.addEventListener('click', (e) => {
+    if (presenter.classList.contains('show') || help.classList.contains('show')) return;
+    const w = window.innerWidth;
+    if (e.clientX < w / 3) prev(); else next();
+  });
+
+  // Hash deep-link
+  const h = parseInt(location.hash.replace('#', ''), 10);
+  if (!isNaN(h) && h >= 1 && h <= slides.length) idx = h - 1;
+
+  show(idx);
+})();
+</script>
+
+</body>
+</html>
