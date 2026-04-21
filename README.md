@@ -1,65 +1,113 @@
-# Glitch Festival 2026 — Talk materials
+# Glitch Please! — Talk at International Glitch Festival 2026
 
-Friday **24 April 2026**, 19:30–20:00 · Infoshop Pippilotta, Zagreb
-International Glitch Festival · Glitch Cult strand
+Materials from **Michal Jenčo's** 30-minute talk at the [International Glitch Festival 2026](https://glitchcult.com) (Glitch Cult strand), Friday 24 April 2026, Infoshop Pippilotta, Zagreb.
 
-## Files
+> *"my weird 14-year path from photographer to glitch-app user to guy who writes his own glitch code."*
 
-- **[presentation.html](presentation.html)** — the actual talk deck. Self-contained HTML, no internet required, works in Chrome on Android tablet. 15 slides. Drop it on your tablet and open. See [images/README.md](images/README.md) for how to add the imagery.
-- **[speaker-notes.md](speaker-notes.md)** — what you'll have in front of you on stage. Timing map, segment-by-segment notes, demo blocking, failure fallbacks. The HTML deck also embeds these notes — press `S` during the presentation to toggle a presenter overlay.
-- **[slides.md](slides.md)** — slide-by-slide spec that the HTML was built from. Keep as reference / single source of truth when editing.
-- **[challenge-card.md](challenge-card.md)** — the take-home challenge rules, paste-ready IG post, and open decisions (payment method).
-- **[images/](images/)** — drop-zone for slide imagery. See [images/README.md](images/README.md) for the expected filenames.
+---
 
-## Presenting from your Android tablet
+## 👋 Hi
 
-1. Copy this whole folder (HTML + images/) onto your tablet (USB, cloud, Syncthing, whatever).
-2. Open `presentation.html` in **Chrome**.
-3. Tap the fullscreen button in Chrome's menu (or press F if you have a keyboard).
-4. **Tap the right two-thirds** of the screen to advance, **left third** to go back. Swipe works too.
-5. To see your notes: press `S` (with a keyboard) or navigate with one finger while checking printed notes. For a full presenter view you'd need a second screen.
-6. **Backup:** print `presentation.html` to PDF from Chrome as a fallback. The CSS has a print media query that flattens the deck to one slide per page.
+I'm Michal, I make glitches. I also write code. For most of the last decade, those were two different things — until I built **Glitch Please!**, an Android app for making glitch art with 37 parametric algorithms, palette-first workflows, and recursive glitch chains.
 
-### Keyboard shortcuts (if you use a BT keyboard / clicker)
-| Key | Action |
+This repo has everything from the talk: the slide deck you watched, the speaker notes, and a downloadable `.apk` of the app if you want to play with it before (or instead of) going to the Play Store.
+
+---
+
+## 📱 Get the app
+
+- **Google Play Store:** *coming soon — link will appear here once the listing is public*
+- **Direct APK download:** [`glitch-please.apk`](./glitch-please.apk) — works on any Android 7+ device. You'll need to allow installing from unknown sources the first time.
+
+---
+
+## 🎨 The challenge — #glitchpleasechallenge2026
+
+If you attended the talk, I promised you a take-home challenge:
+
+1. **Install the app** (Play Store or APK above).
+2. The app starts up with a **default image** — a classical sculpture bust. That's your source.
+3. **Glitch it however you want.** Single image, series, video, grid video — your call.
+4. **Only use the app.** No Photoshop or anything else. But every feature in Glitch Please! is fair game — recursive "use result as source", palette extraction, live editors, video loops, all of it.
+5. **Post on Instagram**, tag me as a collaborator ([@michal.jenco](https://instagram.com/michal.jenco)) — I auto-accept — and use the hashtag **#glitchpleasechallenge2026**.
+
+### Prize
+
+- 🥇 **€30**  ·  🥈 **€20**  ·  🥉 **€10**
+
+### Deadline
+
+**Sunday 26 April 2026, 23:59 CET** (48 hours after the talk).
+
+### Winners announced
+
+Monday 27 April 2026 on Instagram.
+
+### Judging
+
+I pick. It's subjective. Bonus points for recursive glitch chains, cool palette work, and video loops — the features that make the app different from every other glitch app.
+
+---
+
+## 🎞 The slide deck
+
+Open [`presentation.html`](./presentation.html) in any modern browser (Chrome recommended, works offline, no internet required).
+
+### Navigation
+
+| Action | Key / touch |
 |---|---|
-| → / Space / PageDown | Next slide |
-| ← / PageUp | Previous slide |
-| S | Toggle presenter notes |
-| F | Toggle fullscreen |
-| B | Black out screen |
-| Home / End | Jump to first / last slide |
-| 1–9 | Jump to slide N |
-| ? or H | Help overlay |
-| Esc | Close any overlay |
+| Next slide | → · Space · PageDown · tap right two-thirds · swipe left |
+| Previous slide | ← · PageUp · tap left third · swipe right |
+| Toggle presenter notes | `S` |
+| Toggle fullscreen | `F` |
+| Black out screen | `B` |
+| Jump to slide N | `1`–`9` (or use Home / End) |
+| Help overlay | `?` or `H` |
 
-## Outstanding items
+On a phone: just tap the edges of the screen or swipe.
 
-All major narrative/structural decisions are locked. What's left is asset gathering:
+---
 
-- [ ] MIDI sequencer screenshot (slide 5) — if not found by slide-build day, use a clean dark PyCharm window as fallback
-- [ ] Glitch Please! app icon, high-res (slide 8)
-- [ ] Play Store QR (slide 13) — generate once listing is public
-- [ ] Syntax-highlighted screenshot of `ColorGateGlitch.kt:36-63` (slide 11)
-- [ ] Final portrait/signature glitch piece for slide 15 (Q&A)
-- [ ] Payment method ready for winners (Revolut / PayPal / IBAN)
+## 📂 What's in this repo
 
-**Locked challenge details** (for slide 13 / IG post):
-- Deadline: **Sun 26 Apr 2026, 23:59 CET**
-- Winners announced: **Mon 27 Apr 2026**
-- Prize split: **€30 / €20 / €10**
+| File | What it is |
+|------|------------|
+| `presentation.html` | The self-contained slide deck (21 slides, no dependencies, runs offline) |
+| `glitch-please.apk` | The Android app — install to Android 7+ device |
+| `speaker-notes.md` | My talk outline with timing cues and per-segment notes |
+| `challenge-card.md` | Printable / shareable version of the challenge rules |
+| `images/` | All the imagery used in the deck — my photos, early glitches, ComputerArt2018 renders, renaissance-era pieces |
+| `README.md` | This file |
 
-## Rehearsal plan
+---
 
-1. **First read-through** (no slides) — read `speaker-notes.md` aloud with a timer. Target 28–29 min.
-2. **Build the deck** using `slides.md` once the outstanding images are gathered.
-3. **Second rehearsal** — full run with slides + phone mirror. Cut whatever drags.
-4. **Dress rehearsal** — night before, in a space with a projector if possible.
+## 🙏 Thanks
 
-## Narrative arc (locked)
+- **[@glitch_cult](https://instagram.com/glitch_cult)** for inviting me and organizing the whole festival
+- **[@GlitchGuild](https://instagram.com/glitchguild)** for being the community
+- **[@dreamco.exe](https://instagram.com/dreamco.exe)** for being the very first person to comment on my renaissance-era posts in late 2024 — *"❤️ beautiful!!"*
+- And everyone else who encouraged me during the 2024–25 return: @\_xavivx.xy · @canopyhighrise · @monce11o · @soma.artworks · @ays_roseee · @voidreaminal · @preposterousmusic · @creacha111 · @serselugetti · @82.rer
+- Shoutout to whoever made **D3lta, SLMMSK, Tlenogram, 8Bit Photo Lab, Vaporwavewalls, and OneLab** — those were my glitch universes for years
 
-Two tracks — **artist (2016 →)** and **coder (2017 →)** — ran in parallel rooms. **No friction, no frustration** ever pushed them together.
+---
 
-But one hobby project in 2018, **ComputerArt2018**, sat quietly in the middle: a math-function image generator Michal built, saved, showed nobody, and forgot about for seven years.
+## 📫 Contact
 
-In 2025, on impulse — "what if I coded my own glitch algorithm?" — he opened PyCharm and discovered the math he reached for was the same math from 2018. The door between the rooms had been open all along; he just hadn't walked through it. First result was something no existing app produced. That PyCharm moment became **Glitch Please!**
+- **Instagram:** [@michal.jenco](https://instagram.com/michal.jenco)
+- **Photography archive (2012–2016):** [facebook.com/michal.jenco.photography](https://facebook.com/michal.jenco.photography)
+- **App feedback / bug reports:** open an issue in this repo or DM me on IG
+
+---
+
+## License
+
+The **app source code** is under its own repository and license terms (see the Play Store listing for details).
+
+The **talk materials** in this repo (slide deck, speaker notes, challenge card) are **CC BY-NC-SA 4.0** — feel free to share, remix, or adapt for non-commercial use, with credit.
+
+The **photographs and glitch artworks** shown in the deck are © Michal Jenčo, all rights reserved. Please don't repost individual pieces without asking.
+
+---
+
+**Let's break some pixels.** ⚡

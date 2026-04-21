@@ -1,0 +1,23 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# IDE
+.idea/
+.vscode/
+
+# Python / PyCharm virtualenv
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Editor swap files
+*.swp
+*.swo
+*~
+
+# OS thumbnails
+Thumbs.db
