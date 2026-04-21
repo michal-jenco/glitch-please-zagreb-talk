@@ -5,7 +5,7 @@ International Glitch Festival · Glitch Cult strand
 
 ## Files
 
-- **[presentation.html](presentation.html)** — the actual talk deck. Self-contained HTML, no internet required, works in Chrome on Android tablet. 15 slides. Drop it on your tablet and open. See [images/README.md](images/README.md) for how to add the imagery.
+- **[presentation.html](index.html)** — the actual talk deck. Self-contained HTML, no internet required, works in Chrome on Android tablet. 15 slides. Drop it on your tablet and open. See [images/README.md](images/README.md) for how to add the imagery.
 - **[speaker-notes.md](speaker-notes.md)** — what you'll have in front of you on stage. Timing map, segment-by-segment notes, demo blocking, failure fallbacks. The HTML deck also embeds these notes — press `S` during the presentation to toggle a presenter overlay.
 - **[slides.md](slides.md)** — slide-by-slide spec that the HTML was built from. Keep as reference / single source of truth when editing.
 - **[challenge-card.md](challenge-card.md)** — the take-home challenge rules, paste-ready IG post, and open decisions (payment method).

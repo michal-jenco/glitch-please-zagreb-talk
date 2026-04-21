@@ -51,7 +51,7 @@ I pick. It's subjective. Bonus points for recursive glitch chains, cool palette 
 
 ## 🎞 The slide deck
 
-Open [`presentation.html`](./presentation.html) in any modern browser (Chrome recommended, works offline, no internet required).
+Open [`presentation.html`](index.html) in any modern browser (Chrome recommended, works offline, no internet required).
 
 ### Navigation
 
