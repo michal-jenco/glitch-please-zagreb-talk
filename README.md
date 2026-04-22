@@ -1,8 +1,8 @@
 # Glitch Please! — Talk at International Glitch Festival 2026
 
-Materials from **Michal Jenčo's** 30-minute talk at the [International Glitch Festival 2026](https://glitchcult.com) (Glitch Cult strand), Friday 24 April 2026, Infoshop Pippilotta, Zagreb.
+Materials from **Michal Jenčo's** talk at the [International Glitch Festival 2026](https://www.glitch-cult.com/, Friday 24 April 2026, Infoshop Pippilotta, Zagreb.
 
-> *"my weird 14-year path from photographer to glitch-app user to guy who writes his own glitch code."*
+> *"my 14-year path from photographer to glitch-app user to guy who writes his own glitch code."*
 
 ---
 
