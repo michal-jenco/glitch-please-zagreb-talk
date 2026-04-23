@@ -18,6 +18,7 @@ This repo has everything from the talk: the slide deck you watched, the speaker 
 
 - **Google Play Store:** *coming soon — link will appear here once the listing is public*
 - **Direct APK download:** [`glitch-please.apk`](./glitch-please.apk) — works on any Android 7+ device. You'll need to allow installing from unknown sources the first time.
+- **Don't have an android device?** You can run the app in an android emulator like **Bluestacks** on pc/mac as well! 
 
 ---
 
