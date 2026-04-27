@@ -22,7 +22,7 @@ Printable / shareable challenge card. Use this verbatim on slide 12, in a post-t
 
 ## Deadline
 
-**Sunday 26 April 2026, 23:59 CET** (48 hours after the talk).
+**Sunday 3 May 2026, 23:59 CET** (extended from the original 48-hour window).
 
 ## Judging
 
@@ -30,7 +30,7 @@ Michal picks. Purely subjective. Taste, surprise, and uses of the app's unique f
 
 ## Winners announced
 
-**Monday 27 April 2026**, via Instagram (story + grid post, tagging winners).
+**Monday 4 May 2026**, via Instagram (story + grid post, tagging winners).
 
 ---
 
@@ -47,7 +47,7 @@ Michal picks. Purely subjective. Taste, surprise, and uses of the app's unique f
 > 5. Post on IG, tag me as collaborator, use **#glitchpleasechallenge2026**.
 >
 > 🥇 €30 · 🥈 €20 · 🥉 €10 — my top 3 favourites.
-> Deadline: **Sunday 26 April, midnight CET.**
+> Deadline: **Sunday 3 May, midnight CET.**
 >
 > Let's break some pixels. ⚡
 
@@ -55,8 +55,8 @@ Michal picks. Purely subjective. Taste, surprise, and uses of the app's unique f
 
 ## Things still to finalise before slide 13 is built
 
-- [x] Deadline: **Sunday 26 April 2026, 23:59 CET**
-- [x] Winners announced: **Monday 27 April 2026**
+- [x] Deadline: **Sunday 3 May 2026, 23:59 CET**
+- [x] Winners announced: **Monday 4 May 2026**
 - [x] Prize split: **€30 / €20 / €10**
 - [ ] Payment method for winners (Revolut? PayPal? IBAN?) — have one line ready on your IG story when you announce
 - [ ] Play Store QR code image — generate once the store listing is public

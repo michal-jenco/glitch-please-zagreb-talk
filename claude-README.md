@@ -45,8 +45,8 @@ All major narrative/structural decisions are locked. What's left is asset gather
 - [ ] Payment method ready for winners (Revolut / PayPal / IBAN)
 
 **Locked challenge details** (for slide 13 / IG post):
-- Deadline: **Sun 26 Apr 2026, 23:59 CET**
-- Winners announced: **Mon 27 Apr 2026**
+- Deadline: **Sun 3 May 2026, 23:59 CET**
+- Winners announced: **Mon 4 May 2026**
 - Prize split: **€30 / €20 / €10**
 
 ## Rehearsal plan

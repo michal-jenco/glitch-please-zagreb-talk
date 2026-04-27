@@ -38,11 +38,11 @@ If you attended the talk, I promised you a take-home challenge:
 
 ### Deadline
 
-**Sunday 26 April 2026, 23:59 CET** (48 hours after the talk).
+**Sunday 3 May 2026, 23:59 CET** (extended from the original 48-hour window).
 
 ### Winners announced
 
-Monday 27 April 2026 on Instagram.
+Monday 4 May 2026 on Instagram.
 
 ### Judging
 

@@ -322,7 +322,7 @@ Click to slide 2.
 - "Only rule: **use only the app. No other software.**"
 - "Post on Instagram, tag me as a collaborator — I'll auto-accept — and use **#glitchpleasechallenge2026**."
 - "I'll pick my three favourites and split **€60** between them — **€30 to first, €20 to second, €10 to third.**"
-- "Deadline is **Sunday 26th April, midnight.** That's 48 hours. Fast, intense. Take a picture of this slide now."
+- "Deadline is **Sunday 3rd May, midnight.** You've got just over a week. Take a picture of this slide now."
 
 *(Let people photograph the slide.)*
 
